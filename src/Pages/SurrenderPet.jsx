@@ -12,20 +12,37 @@ const SurrenderPet = () => {
     reason: "",
     notes: "",
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [submittedRequest, setSubmittedRequest] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
+    const newErrors = {};
+
+    if (!formData.approxAge.trim()) {
+      newErrors.approxAge = "Approximate age is required";
+    }
+
+    if (!formData.foundLocation.trim()) {
+      newErrors.foundLocation = "Location is required";
+    }
 
     if (formData.contactNumber.length !== 10 || !/^\d+$/.test(formData.contactNumber)) {
-      setError("Enter a valid 10-digit contact number");
+      newErrors.contactNumber = "Enter a valid 10-digit contact number";
+    }
+
+    if (!formData.reason.trim()) {
+      newErrors.reason = "Reason is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -98,8 +115,6 @@ Status: ${submittedRequest.status}
           If you have a pet you can no longer care for, or found a stray animal, fill this form and our shelter team will get in touch.
         </p>
 
-        {error && <p className="error-text">{error}</p>}
-
         <label className="field-label">Animal Type</label>
         <select name="petType" value={formData.petType} onChange={handleChange}>
           <option value="Dog">Dog</option>
@@ -124,8 +139,8 @@ Status: ${submittedRequest.status}
           placeholder="e.g. 1 year, 6 months"
           value={formData.approxAge}
           onChange={handleChange}
-          required
         />
+        {errors.approxAge && <p className="error-text">{errors.approxAge}</p>}
 
         <label className="field-label">Location / Address</label>
         <textarea
@@ -134,8 +149,8 @@ Status: ${submittedRequest.status}
           value={formData.foundLocation}
           onChange={handleChange}
           rows="3"
-          required
         />
+        {errors.foundLocation && <p className="error-text">{errors.foundLocation}</p>}
 
         <label className="field-label">Your Contact Number</label>
         <input
@@ -145,8 +160,8 @@ Status: ${submittedRequest.status}
           value={formData.contactNumber}
           onChange={handleChange}
           maxLength="10"
-          required
         />
+        {errors.contactNumber && <p className="error-text">{errors.contactNumber}</p>}
 
         <label className="field-label">Reason</label>
         <textarea
@@ -155,8 +170,8 @@ Status: ${submittedRequest.status}
           value={formData.reason}
           onChange={handleChange}
           rows="3"
-          required
         />
+        {errors.reason && <p className="error-text">{errors.reason}</p>}
 
         <label className="field-label">Additional Notes (optional)</label>
         <textarea

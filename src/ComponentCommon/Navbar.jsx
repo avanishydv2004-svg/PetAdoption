@@ -1,11 +1,13 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { cart } = useCart();
+  const { wishlist } = useWishlist();
   const user = JSON.parse(localStorage.getItem("currentUser"));
 
   const [isDark, setIsDark] = useState(() => localStorage.getItem("theme") === "dark");
@@ -69,6 +71,7 @@ const Navbar = () => {
         <Link to="/">Home</Link>
         <Link to="/pets">Pets</Link>
         <Link to="/products">Products</Link>
+        <Link to="/wishlist">Wishlist ({wishlist.length})</Link>
         <Link to="/cart">Cart ({cart.length})</Link>
         <button onClick={toggleTheme} className="theme-toggle-btn">
           {isDark ? "☀️" : "🌙"}

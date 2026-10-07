@@ -10,7 +10,7 @@ const Payment = () => {
   const { cart, clearCart, removeFromCart } = useCart();
   const [paymentMethod, setPaymentMethod] = useState("online");
   const [upiId, setUpiId] = useState("");
-  const [error, setError] = useState("");
+  const [upiError, setUpiError] = useState("");
 
   const isCartMode = !id;
   const pet = !isCartMode ? pets.find((p) => p.id === parseInt(id)) : null;
@@ -77,14 +77,14 @@ const Payment = () => {
 
   const handlePayment = (e) => {
     e.preventDefault();
-    setError("");
+    setUpiError("");
 
     let finalStatus = "";
 
     if (paymentMethod === "online") {
       const upiPattern = /^[\w.-]+@[\w.-]+$/;
       if (!upiPattern.test(upiId)) {
-        setError("Enter a valid UPI ID (e.g. name@upi)");
+        setUpiError("Enter a valid UPI ID (e.g. name@upi)");
         return;
       }
       finalStatus = "Paid";
@@ -139,8 +139,6 @@ const Payment = () => {
 
         <h3 className="payment-heading">Choose Payment Method:</h3>
 
-        {error && <p className="error-text">{error}</p>}
-
         <label className={`payment-option ${paymentMethod === "online" ? "payment-option-active" : ""}`}>
           <div className="payment-option-header">
             <input
@@ -162,8 +160,12 @@ const Payment = () => {
                 type="text"
                 placeholder="e.g. mobileNumber@ybl / username@upi"
                 value={upiId}
-                onChange={(e) => setUpiId(e.target.value)}
+                onChange={(e) => {
+                  setUpiId(e.target.value);
+                  setUpiError("");
+                }}
               />
+              {upiError && <p className="error-text">{upiError}</p>}
             </div>
           )}
         </label>

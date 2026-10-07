@@ -8,6 +8,7 @@ import Pets from "./Pets";
 import PetDetails from "./PetDetails";
 import Products from "./Products";
 import ProductDetails from "./ProductDetails";
+import Wishlist from "./Wishlist";
 import AdoptForm from "./AdoptForm";
 import OrderForm from "./OrderForm";
 import Cart from "./Cart";
@@ -40,6 +41,14 @@ const AppRouter = () => {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
 
+        <Route
+          path="wishlist"
+          element={
+            <ProtectedRoute>
+              <Wishlist />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="adopt/:id"
           element={

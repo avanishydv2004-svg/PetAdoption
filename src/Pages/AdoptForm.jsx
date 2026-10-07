@@ -19,7 +19,7 @@ const AdoptForm = () => {
     hasOtherPets: "No",
     reason: "",
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
 
   const isCartMode = !id;
 
@@ -37,20 +37,36 @@ const AdoptForm = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
+    const newErrors = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(formData.email)) {
-      setError("Enter a valid email address");
-      return;
+      newErrors.email = "Enter a valid email address";
     }
 
     if (formData.mobile.length !== 10 || !/^\d+$/.test(formData.mobile)) {
-      setError("Enter a valid 10-digit mobile number");
+      newErrors.mobile = "Enter a valid 10-digit mobile number";
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = "Residential address is required";
+    }
+
+    if (!formData.reason.trim()) {
+      newErrors.reason = "Please tell us why you want to adopt";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -101,8 +117,6 @@ const AdoptForm = () => {
 
         <p className="hint-text">Total Adoption Fee: ₹{totalFee}</p>
 
-        {error && <p className="error-text">{error}</p>}
-
         <label className="field-label">Full Name</label>
         <input
           type="text"
@@ -110,8 +124,8 @@ const AdoptForm = () => {
           placeholder="Enter your full name"
           value={formData.fullName}
           onChange={handleChange}
-          required
         />
+        {errors.fullName && <p className="error-text">{errors.fullName}</p>}
 
         <label className="field-label">Email Address</label>
         <input
@@ -120,8 +134,8 @@ const AdoptForm = () => {
           placeholder="Enter email address"
           value={formData.email}
           onChange={handleChange}
-          required
         />
+        {errors.email && <p className="error-text">{errors.email}</p>}
 
         <label className="field-label">Mobile Number</label>
         <input
@@ -131,8 +145,8 @@ const AdoptForm = () => {
           value={formData.mobile}
           onChange={handleChange}
           maxLength="10"
-          required
         />
+        {errors.mobile && <p className="error-text">{errors.mobile}</p>}
 
         <label className="field-label">Residential Address</label>
         <textarea
@@ -141,8 +155,8 @@ const AdoptForm = () => {
           value={formData.address}
           onChange={handleChange}
           rows="3"
-          required
         />
+        {errors.address && <p className="error-text">{errors.address}</p>}
 
         <label className="field-label">Housing Type</label>
         <select name="housingType" value={formData.housingType} onChange={handleChange}>
@@ -165,8 +179,8 @@ const AdoptForm = () => {
           value={formData.reason}
           onChange={handleChange}
           rows="3"
-          required
         />
+        {errors.reason && <p className="error-text">{errors.reason}</p>}
 
         <button type="submit">Submit & Proceed to Payment</button>
       </form>

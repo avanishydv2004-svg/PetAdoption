@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import pets from "../data/pets";
 import petTypes from "../data/petTypes";
 import { useSearch } from "../context/SearchContext";
+import { useWishlist } from "../context/WishlistContext";
 
 const Pets = () => {
   const {
@@ -13,6 +14,7 @@ const Pets = () => {
     vaccinationFilter,
     setVaccinationFilter,
   } = useSearch();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [allPets, setAllPets] = useState([]);
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
 
@@ -82,7 +84,16 @@ const Pets = () => {
         {filteredPets.length === 0 && <p>No pets found.</p>}
         {filteredPets.map((pet) => (
           <div className="pet-card" key={pet.id}>
-            <img src={pet.image} alt={pet.name} />
+            <div className="wishlist-img-wrapper">
+              <img src={pet.image} alt={pet.name} />
+              <button
+                className={`wishlist-heart-btn ${isWishlisted(pet.id, "pet") ? "active" : ""}`}
+                onClick={() => toggleWishlist(pet, "pet")}
+                title="Save to wishlist"
+              >
+                {isWishlisted(pet.id, "pet") ? "❤️" : "🤍"}
+              </button>
+            </div>
             <h3>{pet.name}</h3>
             <p>{pet.breed} • {pet.age} • {pet.gender}</p>
             <p className={pet.status === "Available" ? "status-available" : "status-adopted"}>

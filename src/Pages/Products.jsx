@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import products from "../data/products";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 const Products = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const { addToCart } = useCart();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [addedId, setAddedId] = useState(null);
 
   useEffect(() => {
@@ -41,7 +43,16 @@ const Products = () => {
         {filteredProducts.length === 0 && <p>No products found.</p>}
         {filteredProducts.map((product) => (
           <div className="pet-card" key={product.id}>
-            <img src={product.image} alt={product.name} />
+            <div className="wishlist-img-wrapper">
+              <img src={product.image} alt={product.name} />
+              <button
+                className={`wishlist-heart-btn ${isWishlisted(product.id, "product") ? "active" : ""}`}
+                onClick={() => toggleWishlist(product, "product")}
+                title="Save to wishlist"
+              >
+                {isWishlisted(product.id, "product") ? "❤️" : "🤍"}
+              </button>
+            </div>
             <h3>{product.name}</h3>
             <p>{product.category} • {product.brand}</p>
             <p className="pet-details-info"><strong>₹{product.fee}</strong></p>
